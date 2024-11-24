@@ -1,0 +1,7 @@
+GET http://localhost:8080/aston_hw_RESTProject_war_exploded/groups/1
+###
+GET http://localhost:8080/aston_hw_RESTProject_war_exploded/users/1/groups
+###
+GET http://localhost:8080/aston_hw_RESTProject_war_exploded/users
+###
+POST http://localhost:8080/aston_hw_RESTProject_war_exploded/users?name=John%20Doe&email=john.doe@example.com
