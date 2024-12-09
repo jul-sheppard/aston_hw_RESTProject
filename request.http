@@ -1,7 +1,27 @@
-GET http://localhost:8080/aston_hw_RESTProject_war_exploded/groups/1
-###
 GET http://localhost:8080/aston_hw_RESTProject_war_exploded/users/1/groups
 ###
 GET http://localhost:8080/aston_hw_RESTProject_war_exploded/users
 ###
 POST http://localhost:8080/aston_hw_RESTProject_war_exploded/users?name=John%20Doe&email=john.doe@example.com
+###
+POST http://localhost:8080/aston_hw_RESTProject_war_exploded/users?userId=8&name=John%20Doe&email=john.doe@example.com&groupId=1
+###
+DELETE http://localhost:8080/aston_hw_RESTProject_war_exploded/users/7
+###
+DELETE http://localhost:8080/aston_hw_RESTProject_war_exploded/users/5/groups?groupId=2
+###
+PUT http://localhost:8080/aston_hw_RESTProject_war_exploded/users/1?name=Sandra%20Watson&email=sandra.watson@example.com
+###
+###
+###
+GET http://localhost:8080/aston_hw_RESTProject_war_exploded/groups
+###
+GET http://localhost:8080/aston_hw_RESTProject_war_exploded/groups/1
+###
+GET http://localhost:8080/aston_hw_RESTProject_war_exploded/groups/1/users
+###
+POST http://localhost:8080/aston_hw_RESTProject_war_exploded/groups?name=Supports
+###
+DELETE http://localhost:8080/aston_hw_RESTProject_war_exploded/groups/5
+###
+DELETE http://localhost:8080/aston_hw_RESTProject_war_exploded/groups?name=Supports

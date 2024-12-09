@@ -15,6 +15,8 @@ public class GroupDTO {
         this.users = users;
     }
 
+    public GroupDTO() {}
+
     public int getId() {
         return id;
     }

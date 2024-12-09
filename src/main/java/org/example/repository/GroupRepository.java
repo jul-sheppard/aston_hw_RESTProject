@@ -14,7 +14,7 @@ import java.util.List;
 public class GroupRepository {
 
     public Group getGroupById(int id) throws SQLException {
-        String sql = "select * from group where id = ?";
+        String sql = "select * from `groups` where id = ?";
         try (Connection connection = DataBaseConfig.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, id);
@@ -28,6 +28,22 @@ public class GroupRepository {
             }
         }
         return null;
+    }
+
+    public List<Group> getAllGroups() throws SQLException {
+        String sql = "select * from `groups`";
+        try (Connection connection = DataBaseConfig.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<Group> groups = new ArrayList<>();
+            while (resultSet.next()) {
+                Group group = new Group();
+                group.setId(resultSet.getInt("id"));
+                group.setName(resultSet.getString("name"));
+                groups.add(group);
+            }
+            return groups;
+        }
     }
 
     public List<User> getUsersByGroupId(int groupId) throws SQLException {
@@ -67,12 +83,40 @@ public class GroupRepository {
     }
 
     public boolean createGroup(Group group) throws SQLException {
-        String sql = "insert into groups (name) values (?)";
+        String sql = "insert into `groups` (name) values (?)";
         try (Connection connection = DataBaseConfig.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, group.getName());
             int rowsInserted = preparedStatement.executeUpdate();
-            return rowsInserted > 0;
+            if (rowsInserted > 0) {
+                try (ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
+                    if (resultSet.next()) {
+                        group.setId(resultSet.getInt(1));
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public boolean deleteGroupById(int id) throws SQLException {
+        String sql = "delete from `groups` where id = ?";
+        try (Connection connection = DataBaseConfig.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, id);
+            int rowsDeleted = preparedStatement.executeUpdate();
+            return rowsDeleted > 0;
+        }
+    }
+
+    public boolean deleteGroupByName(String name) throws SQLException {
+        String sql = "delete from `groups` where name = ?";
+        try (Connection connection = DataBaseConfig.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, name);
+            int rowsDeleted = preparedStatement.executeUpdate();
+            return rowsDeleted > 0;
         }
     }
 }

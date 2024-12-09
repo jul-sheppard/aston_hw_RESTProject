@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class UserService {
-    private final UserRepository userRepository = new UserRepository();
+    private static final UserRepository userRepository = new UserRepository();
 
     //получение всех пользователей
     public List<UserDTO> getAllUsers() throws SQLException {
@@ -37,16 +37,16 @@ public class UserService {
     }
 
     //удаление пользователя из группы
-    public boolean removeUserFromGroup(UserDTO userDTO) throws SQLException {
-        if (userDTO.getName() == null || userDTO.getName().isEmpty()) {
-            throw new SQLException("Name is empty");
+    public static boolean removeUserFromGroup(UserDTO userDTO, int groupId) throws SQLException {
+        if (userDTO.getId() == 0 || groupId == 0) {
+            throw new SQLException("Invalid user or group ID");
         }
-        if (userDTO.getId() <= 0) {
-            throw new SQLException("Id is empty");
-        }
-        User user = new User(userDTO.getId(), userDTO.getName(), userDTO.getEmail());
-        userRepository.removeUserFromGroup(user.getId(), userDTO.getId());
+        userRepository.removeUserFromGroup(userDTO.getId(), groupId);
         return true;
+    }
+
+    public void deleteUser(int userId) throws SQLException {
+        userRepository.deleteUser(userId);
     }
 
     //получение групп, к которым принаджлежит пользватель
@@ -62,5 +62,15 @@ public class UserService {
             throw new SQLException("Name is empty");
         }
         return userRepository.addUser(userDTO);
+    }
+
+    public boolean updateUser(UserDTO userDTO) throws SQLException {
+        if (userDTO.getName() == null || userDTO.getName().isEmpty()) {
+            throw new SQLException("Name is empty");
+        }
+        if (userDTO.getId() <= 0) {
+            throw new SQLException("Id is empty");
+        }
+        return userRepository.updateUser(userDTO);
     }
 }

@@ -52,12 +52,25 @@ public class UserRepository {
     }
 
     public void removeUserFromGroup(int userId, int groupId) throws SQLException {
-        String sql = "DELETE FROM groups WHERE id = ?";
+        String sql = "DELETE FROM user_groups WHERE user_id = ? AND group_id = ?";
         try (Connection connection = DataBaseConfig.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, userId);
             statement.setInt(2, groupId);
             statement.executeUpdate();
+        }
+    }
+
+    public void deleteUser(int userId) throws SQLException {
+        String sql = "DELETE FROM users WHERE id = ?";
+        try (Connection connection = DataBaseConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, userId);
+            int rowsDeleted = statement.executeUpdate();
+
+            if (rowsDeleted == 0) {
+                throw new SQLException("User with ID " + userId + " not found.");
+            }
         }
     }
 
@@ -84,11 +97,23 @@ public class UserRepository {
         String sql = "INSERT INTO users (name, email) VALUES (?, ?)";
         boolean rowsAffected = false;
         try (Connection connection = DataBaseConfig.getConnection();
-        PreparedStatement statement = connection.prepareStatement(sql)) {
+             PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, userDTO.getName());
             statement.setString(2, userDTO.getEmail());
             rowsAffected = statement.executeUpdate() == 0 ? false : true;
         }
         return rowsAffected;
+    }
+
+    public boolean updateUser(UserDTO userDTO) throws SQLException {
+        String sql = "UPDATE users SET name = ?, email = ? WHERE id = ?";
+        try (Connection connection = DataBaseConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, userDTO.getName());
+            statement.setString(2, userDTO.getEmail());
+            statement.setInt(3, userDTO.getId());
+            int rowsUpdated = statement.executeUpdate();
+            return rowsUpdated > 0;
+        }
     }
 }
